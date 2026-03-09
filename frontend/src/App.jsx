@@ -6,14 +6,16 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   
-  // New states for processing and results
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultUrl, setResultUrl] = useState(null);
+  
+  // New state for the dropdown
+  const [modelType, setModelType] = useState('general');
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-    setResultUrl(null); // Reset result if uploading a new file
+    setResultUrl(null); 
   };
 
   const handleCancel = () => {
@@ -22,16 +24,17 @@ export default function App() {
     setResultUrl(null);
   };
 
-const handleUpscale = async () => {
+  const handleUpscale = async () => {
     if (!selectedFile) return;
     setIsProcessing(true);
     
-    // 1. Prepare the file to be sent via HTTP
+    // 1. Pack the file and the selected model type
     const formData = new FormData();
     formData.append('file', selectedFile);
+    formData.append('model_type', modelType); 
 
     try {
-      // 2. Send the file to our FastAPI backend
+      // 2. Send to FastAPI
       const response = await fetch('http://localhost:8000/api/upscale', {
         method: 'POST',
         body: formData,
@@ -43,18 +46,40 @@ const handleUpscale = async () => {
       }
 
       const data = await response.json();
-      console.log("Success! Backend returned:", data);
+      const jobId = data.job_id;
       
-      // We don't have Real-ESRGAN running yet, so we will still just show the 
-      // original image in the result viewer to keep the UI from breaking.
-      setResultUrl(previewUrl); 
+      // 3. Start Polling the Result Endpoint
+      pollForResult(jobId);
 
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error uploading:", error);
       alert(error.message);
-    } finally {
       setIsProcessing(false);
     }
+  };
+
+  const pollForResult = (jobId) => {
+    // Check the server every 3 seconds
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
+        
+        if (res.ok) {
+          // Success! The server returned the image.
+          clearInterval(interval);
+          setResultUrl(`http://localhost:8000/api/result/${jobId}`);
+          setIsProcessing(false);
+        } else if (res.status !== 404) {
+          // A real error occurred (not just a "still processing" 404)
+          clearInterval(interval);
+          setIsProcessing(false);
+          alert("Processing failed on the server.");
+        }
+        // If it's a 404, we just do nothing and wait for the next 3-second check.
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+    }, 3000);
   };
 
   return (
@@ -86,12 +111,23 @@ const handleUpscale = async () => {
               />
             </div>
             
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <p className="text-sm text-slate-500 font-medium truncate max-w-[200px]">
                 {selectedFile.name}
               </p>
               
-              <div className="space-x-3 flex">
+              <div className="flex items-center space-x-3 w-full sm:w-auto">
+                {/* Model Selection Dropdown */}
+                <select 
+                  value={modelType}
+                  onChange={(e) => setModelType(e.target.value)}
+                  disabled={isProcessing}
+                  className="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <option value="general">General Model</option>
+                  <option value="anime">Anime Model</option>
+                </select>
+
                 <button 
                   onClick={handleCancel}
                   disabled={isProcessing}
