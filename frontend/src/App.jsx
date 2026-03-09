@@ -59,28 +59,32 @@ export default function App() {
   };
 
   const pollForResult = (jobId) => {
-    // Check the server every 3 seconds
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
-        
-        if (res.ok) {
-          // Success! The server returned the image.
-          clearInterval(interval);
-          setResultUrl(`http://localhost:8000/api/result/${jobId}`);
-          setIsProcessing(false);
-        } else if (res.status !== 404) {
-          // A real error occurred (not just a "still processing" 404)
-          clearInterval(interval);
-          setIsProcessing(false);
-          alert("Processing failed on the server.");
+      // Check the server every 3 seconds
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
+          
+          if (res.ok) {
+            // 1. Read the JSON sent by FastAPI
+            const data = await res.json();
+            
+            // 2. Stop the polling loop
+            clearInterval(interval);
+            
+            // 3. Put the Azure URL directly into the image slider
+            setResultUrl(data.url);
+            setIsProcessing(false);
+            
+          } else if (res.status !== 404) {
+            clearInterval(interval);
+            setIsProcessing(false);
+            alert("Processing failed on the server.");
+          }
+        } catch (err) {
+          console.error("Polling error:", err);
         }
-        // If it's a 404, we just do nothing and wait for the next 3-second check.
-      } catch (err) {
-        console.error("Polling error:", err);
-      }
-    }, 3000);
-  };
+      }, 3000);
+    };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-slate-900">
