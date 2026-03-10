@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import UploadDropzone from './components/UploadDropzone';
-import ResultViewer from './components/ResultViewer';
+import Home from './pages/Home';
 
 export default function App() {
+<<<<<<< Updated upstream
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   
@@ -82,102 +81,16 @@ export default function App() {
     }, 3000);
   };
 
+=======
+>>>>>>> Stashed changes
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-slate-900">
-      <div className="max-w-3xl w-full space-y-8 text-center">
-        
-        <div className="space-y-4">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Image Upscaler
-          </h1>
-          <p className="text-lg text-slate-600">
-            Enhance your images instantly using Real-ESRGAN. Secure, fast, and completely free.
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col items-center justify-center p-6 selection:bg-indigo-500/30">
+      
+      {/* Background Glow Effect */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none"></div>
 
-        {/* State 1: Upload */}
-        {!selectedFile && (
-          <UploadDropzone onFileSelect={handleFileSelect} />
-        )}
-
-        {/* State 2: Preview & Processing */}
-        {selectedFile && !resultUrl && (
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
-            <div className="bg-slate-100 rounded-lg p-2 border border-slate-200 flex justify-center">
-              <img 
-                src={previewUrl} 
-                alt="Upload preview" 
-                className={`max-h-80 w-auto object-contain rounded transition-opacity duration-300 ${isProcessing ? 'opacity-50 grayscale' : 'opacity-100'}`}
-              />
-            </div>
-            
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-slate-500 font-medium truncate max-w-[200px]">
-                {selectedFile.name}
-              </p>
-              
-              <div className="flex items-center space-x-3 w-full sm:w-auto">
-                {/* Model Selection Dropdown */}
-                <select 
-                  value={modelType}
-                  onChange={(e) => setModelType(e.target.value)}
-                  disabled={isProcessing}
-                  className="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2 disabled:opacity-50 cursor-pointer"
-                >
-                  <option value="general">General Model</option>
-                  <option value="anime">Anime Model</option>
-                </select>
-
-                <button 
-                  onClick={handleCancel}
-                  disabled={isProcessing}
-                  className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={handleUpscale}
-                  disabled={isProcessing}
-                  className="flex items-center justify-center min-w-[130px] px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-80 cursor-pointer"
-                >
-                  {isProcessing ? (
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
-                    "Upscale Image"
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* State 3: Result Slider */}
-        {resultUrl && (
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <ResultViewer originalImage={previewUrl} upscaledImage={resultUrl} />
-            
-            <div className="flex justify-between items-center">
-              <button 
-                onClick={handleCancel}
-                className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-              >
-                Upload Another
-              </button>
-              <a 
-                href={resultUrl}
-                download={`upscaled-${selectedFile.name}`}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
-              >
-                Download Result
-              </a>
-            </div>
-          </div>
-        )}
-
-      </div>
+      <Home />
+      
     </div>
-  )
+  );
 }
