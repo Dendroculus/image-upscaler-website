@@ -1,19 +1,17 @@
-import os
 import cv2
 import asyncio
 import numpy as np
 import torch
 import gc
+import io
 from PIL import Image
-from pathlib import Path
 
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
 
 from core.config import MAX_IMAGE_DIMENSION
 from core.model_registry import ModelRegistry
-
-RESULT_DIR = Path("results")
+from services.storage import StorageService
 
 class AIUpscaler:
     def __init__(self):
@@ -27,19 +25,9 @@ class AIUpscaler:
         path = ModelRegistry.get_path(model_type)
         
         model = RRDBNet(**arch_config)
-
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Model file missing: {path}")
-
         engine = RealESRGANer(
-            scale=4,
-            model_path=path,
-            model=model,
-            tile=0,
-            tile_pad=10,
-            pre_pad=0,
-            half=self.use_half,
-            device=self.device,
+            scale=4, model_path=path, model=model, tile=0,
+            tile_pad=10, pre_pad=0, half=self.use_half, device=self.device,
         )
         self._engines[model_type] = engine
         return engine
@@ -49,11 +37,10 @@ class AIUpscaler:
             self._load_engine(model_type)
         return self._engines[model_type]
 
-    def _load_and_preprocess(self, input_path: str, job_id: str) -> np.ndarray:
-        # Adapted to read directly from the local disk
-        with Image.open(input_path) as pil_img:
+    def _load_and_preprocess(self, image_bytes: bytes, job_id: str) -> np.ndarray:
+        # Load directly from memory bytes instead of a file path!
+        with Image.open(io.BytesIO(image_bytes)) as pil_img:
             width, height = pil_img.size
-            
             if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
                 print(f"⚠️ Job #{job_id} - Huge Image ({width}x{height}). Resizing...")
                 pil_img.thumbnail((MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION), Image.Resampling.LANCZOS)
@@ -70,14 +57,12 @@ class AIUpscaler:
 
         upsampler = self._get_engine(model_type)
         upsampler.tile = tile_size
-        
         upsampler.model.to(self.device)
         if self.use_half:
             upsampler.model.half()
         upsampler.half = self.use_half
 
         print(f" ⚒️ Job #{job_id} - Processing ({model_type}) [Size: {width}x{height}] [Tile: {tile_size}]...")
-        
         output_img, _ = upsampler.enhance(img, outscale=4)
         return output_img
 
@@ -86,26 +71,30 @@ class AIUpscaler:
             torch.cuda.empty_cache()
             gc.collect()
 
-    async def run_upscale(self, input_path: str, job_id: str, model_type: str = "general") -> bool:
-        """
-        Orchestrates the local upscaling pipeline asynchronously.
-        Reads from uploads/, processes, and saves directly to results/.
-        """
+    async def run_upscale(self, safe_filename: str, job_id: str, model_type: str = "general") -> bool:
+        """Downloads from Azure, processes in memory, and uploads the result back to Azure."""
         try:
             self._cleanup_resources()
 
-            # 1. Load and preprocess from local disk
-            img_array = await asyncio.to_thread(self._load_and_preprocess, input_path, job_id)
-            
-            # 2. Run inference
+            # 1. Download raw image from Private Azure Container
+            print(f"📥 Job #{job_id} - Downloading raw image from Azure...")
+            raw_bytes = await StorageService.get_upload_bytes(safe_filename)
+
+            # 2. Process in Memory
+            img_array = await asyncio.to_thread(self._load_and_preprocess, raw_bytes, job_id)
             output_img = await asyncio.to_thread(self._run_inference, img_array, model_type, job_id)
             
-            # 3. Save directly to results folder
-            output_filename = f"{job_id}.png"
-            output_path = RESULT_DIR / output_filename
-            cv2.imwrite(str(output_path), output_img)
+            # 3. Encode to PNG
+            success, buffer = cv2.imencode(".png", output_img)
+            if not success:
+                raise ValueError("Could not encode output image to PNG.")
             
-            print(f"✅ Job #{job_id} Success! Saved to {output_path}")
+            # 4. Upload directly to Public Azure Container
+            result_filename = f"{job_id}.png"
+            print(f"☁️ Job #{job_id} - Uploading 4K result to Azure...")
+            await StorageService.save_result(buffer.tobytes(), result_filename)
+            
+            print(f"✅ Job #{job_id} Success! Cloud pipeline complete.")
             return True
 
         except Exception as e:
@@ -115,5 +104,4 @@ class AIUpscaler:
         finally:
             self._cleanup_resources()
 
-# Instantiate a global instance to be used by the FastAPI router
 ai_upscaler = AIUpscaler()
