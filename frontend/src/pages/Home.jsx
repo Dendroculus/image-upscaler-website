@@ -22,11 +22,10 @@ export default function Home() {
     handleUpscale
   } = useUpscalePipeline(setProgress);
 
-  // Trigger the visual loading bar based on the pipeline's processing state
   useSimulatedProgress(isProcessing, setProgress);
 
   return (
-    <div className="max-w-4xl w-full space-y-10 text-center relative z-10">
+    <div className="max-w-4xl w-full my-auto space-y-10 text-center relative z-10">
       
       <Header />
 
