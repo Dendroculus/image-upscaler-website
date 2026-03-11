@@ -27,6 +27,13 @@ export default function UploadDropzone({ onFileSelect }) {
     fileInputRef.current.click();
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInputRef.current.click();
+    }
+  };
+
   const handleChange = (e) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -44,12 +51,16 @@ export default function UploadDropzone({ onFileSelect }) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label="Upload image file"
       className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors duration-200 ease-in-out shadow-sm
         ${isDragging ? 'border-slate-800 bg-slate-100' : 'border-slate-300 bg-white hover:border-slate-400 hover:bg-slate-50'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
     >
       <input
         type="file"
