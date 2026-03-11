@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 export default function ResultViewer({ originalImage, upscaledImage }) {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -53,3 +54,9 @@ export default function ResultViewer({ originalImage, upscaledImage }) {
     </div>
   );
 }
+
+ResultViewer.propTypes = {
+  originalImage: PropTypes.string.isRequired,
+  upscaledImage: PropTypes.string.isRequired
+};
+

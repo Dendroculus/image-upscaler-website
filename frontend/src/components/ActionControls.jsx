@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function ActionControls({ modelType, setModelType, isProcessing, handleCancel, handleUpscale }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
@@ -28,3 +30,11 @@ export default function ActionControls({ modelType, setModelType, isProcessing, 
     </div>
   );
 }
+
+ActionControls.propTypes = {
+  modelType: PropTypes.string.isRequired,
+  setModelType: PropTypes.func.isRequired,
+  isProcessing: PropTypes.bool.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+  handleUpscale: PropTypes.func.isRequired,
+};
