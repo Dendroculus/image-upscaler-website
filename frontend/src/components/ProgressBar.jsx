@@ -1,8 +1,16 @@
+import PropTypes from 'prop-types';
+
+function getStatusLabel(progress) {
+  if (progress < 30) return "Uploading to Cloud...";
+  if (progress < 99) return "AI Enhancing Details...";
+  return "Finalizing...";
+}
+
 export default function ProgressBar({ progress }) {
   return (
     <div className="w-full space-y-2">
       <div className="flex justify-between text-xs font-medium text-slate-400 px-1">
-        <span>{progress < 30 ? "Uploading to Cloud..." : progress < 99 ? "AI Enhancing Details..." : "Finalizing..."}</span>
+        <span>{getStatusLabel(progress)}</span>
         <span>{Math.round(progress)}%</span>
       </div>
       <div className="w-full bg-slate-950 rounded-full h-2.5 border border-slate-800">
@@ -14,3 +22,7 @@ export default function ProgressBar({ progress }) {
     </div>
   );
 }
+
+ProgressBar.propTypes = {
+  progress: PropTypes.number.isRequired,
+};

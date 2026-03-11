@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 export default function UploadDropzone({ onFileSelect }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -18,7 +19,7 @@ export default function UploadDropzone({ onFileSelect }) {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
+    if (files?.length > 0) {
       handleFiles(files[0]);
     }
   };
@@ -36,13 +37,13 @@ export default function UploadDropzone({ onFileSelect }) {
 
   const handleChange = (e) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
+    if (files?.length > 0) {
       handleFiles(files[0]);
     }
   };
 
   const handleFiles = (file) => {
-    if (file && file.type.match('image/(jpeg|png|webp)')) {
+    if (file?.type.match('image/(jpeg|png|webp)')) {
       onFileSelect(file);
     } else {
       alert('Please upload a valid image file (PNG, JPG, WEBP).');
@@ -81,3 +82,7 @@ export default function UploadDropzone({ onFileSelect }) {
     </div>
   );
 }
+
+UploadDropzone.propTypes = {
+  onFileSelect: PropTypes.func.isRequired,
+};

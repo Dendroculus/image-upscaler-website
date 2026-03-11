@@ -49,6 +49,6 @@ class StorageService:
     @staticmethod
     def get_result_url(result_filename: str) -> str:
         """Generates the public Azure URL for the frontend."""
-        parts = dict(item.split("=", 1) for item in AZURE_CONNECTION_STRING.split(";") if "=" in item)
+        parts = {k: v for k, v in (item.split("=", 1) for item in AZURE_CONNECTION_STRING.split(";") if "=" in item)}
         account_name = parts.get("AccountName")
         return f"https://{account_name}.blob.core.windows.net/results/{result_filename}"
