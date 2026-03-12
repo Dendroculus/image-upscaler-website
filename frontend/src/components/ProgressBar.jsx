@@ -9,13 +9,13 @@ function getStatusLabel(progress) {
 export default function ProgressBar({ progress }) {
   return (
     <div className="w-full space-y-2">
-      <div className="flex justify-between text-xs font-medium text-slate-400 px-1">
+      <div className="flex justify-between text-xs font-bold text-slate-700 px-1">
         <span>{getStatusLabel(progress)}</span>
         <span>{Math.round(progress)}%</span>
       </div>
-      <div className="w-full bg-slate-950 rounded-full h-2.5 border border-slate-800">
+      <div className="w-full bg-white/50 rounded-full h-2.5 border border-white/40 shadow-inner">
         <div 
-          className="bg-gradient-to-r from-teal-500 to-teal-400 h-2.5 rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(20,184,166,0.5)]" 
+          className="bg-slate-800 h-2.5 rounded-full transition-all duration-300 ease-out shadow-sm" 
           style={{ width: `${progress}%` }}
         ></div>
       </div>
