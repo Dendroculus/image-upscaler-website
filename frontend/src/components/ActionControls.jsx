@@ -7,7 +7,7 @@ export default function ActionControls({ modelType, setModelType, isProcessing, 
         value={modelType}
         onChange={(e) => setModelType(e.target.value)}
         disabled={isProcessing}
-        className="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-3 py-2.5 disabled:opacity-50 outline-none"
+        className="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block px-3 py-2.5 disabled:opacity-50 outline-none"
       >
         <option value="general">General Model</option>
         <option value="anime">Anime / Art Model</option>
@@ -23,7 +23,7 @@ export default function ActionControls({ modelType, setModelType, isProcessing, 
       <button 
         onClick={handleUpscale}
         disabled={isProcessing}
-        className="flex items-center justify-center min-w-[140px] px-6 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-colors shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] disabled:opacity-50 disabled:shadow-none"
+        className="flex items-center justify-center min-w-[140px] px-6 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-lg hover:bg-teal-500 transition-colors shadow-[0_0_15px_rgba(13,148,136,0.4)] hover:shadow-[0_0_25px_rgba(13,148,136,0.6)] disabled:opacity-50 disabled:shadow-none"
       >
         {isProcessing ? "Processing..." : "Upscale Image"}
       </button>
