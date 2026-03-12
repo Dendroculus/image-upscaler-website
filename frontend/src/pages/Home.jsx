@@ -29,8 +29,8 @@ export default function Home() {
       
       {/* Hero Section */}
       <section className="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-medium mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 border border-white/60 text-slate-700 text-xs font-semibold mb-6 shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#EEAECA] animate-pulse"></span>
           Free & Open Source — No sign-up required
         </div>
         
@@ -39,24 +39,24 @@ export default function Home() {
         {/* Upload Area */}
         <div className="mt-12">
           {!selectedFile && (
-            <div className="bg-slate-900/60 backdrop-blur-2xl p-2 rounded-2xl border border-slate-800/80 shadow-2xl shadow-teal-500/5">
+            <div className="bg-white/40 backdrop-blur-2xl p-2 rounded-2xl border border-white/50 shadow-xl shadow-slate-900/5">
               <UploadDropzone onFileSelect={handleFileSelect} />
             </div>
           )}
 
           {selectedFile && (
-            <div className="bg-slate-900/60 backdrop-blur-2xl p-6 rounded-2xl shadow-2xl border border-slate-800/80 space-y-6">
+            <div className="bg-white/50 backdrop-blur-2xl p-6 rounded-2xl shadow-xl border border-white/60 space-y-6">
               
               {!resultUrl ? (
-                <div className="bg-slate-950 rounded-xl p-2 border border-slate-800/50 flex justify-center overflow-hidden">
+                <div className="bg-white/50 rounded-xl p-2 border border-white/40 flex justify-center overflow-hidden">
                   <img 
                     src={previewUrl} 
                     alt="Upload preview" 
-                    className={`max-h-[400px] w-auto object-contain rounded-lg transition-all duration-700 ${isProcessing ? 'scale-105 opacity-40 blur-sm' : 'opacity-100'}`}
+                    className={`max-h-[400px] w-auto object-contain rounded-lg transition-all duration-700 ${isProcessing ? 'scale-105 opacity-60 blur-sm' : 'opacity-100'}`}
                   />
                 </div>
               ) : (
-                <div className="rounded-xl overflow-hidden border border-slate-800">
+                <div className="rounded-xl overflow-hidden border border-white/60 shadow-sm">
                   <ResultViewer originalImage={previewUrl} upscaledImage={resultUrl} />
                 </div>
               )}
@@ -65,7 +65,7 @@ export default function Home() {
 
               {!resultUrl && (
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
-                  <p className="text-sm text-slate-400 font-medium truncate max-w-[250px]">
+                  <p className="text-sm text-slate-700 font-medium truncate max-w-[250px]">
                     {selectedFile.name}
                   </p>
                   
@@ -83,14 +83,14 @@ export default function Home() {
                 <div className="flex justify-between items-center pt-2">
                   <button 
                     onClick={handleCancel}
-                    className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    className="px-5 py-2.5 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-white/60 rounded-lg transition-colors"
                   >
                     Upload Another Image
                   </button>
                   <a 
                     href={resultUrl}
                     download={`4K-${selectedFile.name}`}
-                    className="px-6 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-lg hover:bg-teal-500 transition-all shadow-[0_0_15px_rgba(13,148,136,0.4)]"
+                    className="px-6 py-2.5 text-sm font-bold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-all shadow-md"
                   >
                     Download Result
                   </a>
@@ -101,10 +101,10 @@ export default function Home() {
         </div>
 
         {/* Trusted formats badge */}
-        <div className="mt-6 flex items-center justify-center gap-4 text-xs text-slate-500">
+        <div className="mt-6 flex items-center justify-center gap-4 text-xs text-slate-600 font-medium">
           <span>Supports:</span>
           {['PNG', 'JPG', 'WEBP'].map((fmt) => (
-            <span key={fmt} className="px-2 py-0.5 rounded bg-slate-800/50 border border-slate-700/50 text-slate-400 font-mono">
+            <span key={fmt} className="px-2 py-0.5 rounded bg-white/40 border border-white/50 text-slate-600 font-mono">
               .{fmt.toLowerCase()}
             </span>
           ))}
@@ -113,8 +113,8 @@ export default function Home() {
 
       {/* Features Section */}
       <section id="features" className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-2xl font-bold text-center mb-2">Why Neural Upscaler?</h2>
-        <p className="text-slate-400 text-center mb-12 max-w-xl mx-auto">Enterprise-grade image enhancement powered by state-of-the-art AI models.</p>
+        <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">Why Neural Upscaler?</h2>
+        <p className="text-slate-700 text-center mb-12 max-w-xl mx-auto font-medium">Enterprise-grade image enhancement powered by state-of-the-art AI models.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
@@ -146,12 +146,12 @@ export default function Home() {
               desc: 'Choose between General (photos) and Anime/Art models for optimal results on any image type.'
             }
           ].map((feature, i) => (
-            <div key={i} className="group p-6 rounded-2xl bg-slate-900/40 border border-slate-800/60 hover:border-slate-700/80 transition-all hover:bg-slate-900/60">
-              <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-4 group-hover:bg-teal-500/20 transition-colors">
+            <div key={i} className="group p-6 rounded-2xl bg-white/40 border border-white/50 hover:border-white hover:bg-white/60 transition-all shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white shadow-sm border border-white/60 flex items-center justify-center text-slate-800 mb-4 group-hover:scale-105 transition-transform">
                 {feature.icon}
               </div>
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
+              <p className="text-sm text-slate-700 leading-relaxed font-medium">{feature.desc}</p>
             </div>
           ))}
         </div>
@@ -159,8 +159,8 @@ export default function Home() {
 
       {/* How it Works Section */}
       <section id="how-it-works" className="max-w-4xl mx-auto px-6 py-20">
-        <h2 className="text-2xl font-bold text-center mb-2">How It Works</h2>
-        <p className="text-slate-400 text-center mb-12">Three simple steps to enhance your images.</p>
+        <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">How It Works</h2>
+        <p className="text-slate-700 text-center mb-12 font-medium">Three simple steps to enhance your images.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -169,9 +169,9 @@ export default function Home() {
             { step: '03', title: 'Download', desc: 'Compare the before & after, then download your enhanced image instantly.' },
           ].map((item, i) => (
             <div key={i} className="text-center">
-              <div className="text-4xl font-black text-teal-500/20 mb-3">{item.step}</div>
-              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-              <p className="text-sm text-slate-400">{item.desc}</p>
+              <div className="text-5xl font-black text-white drop-shadow-md mb-3">{item.step}</div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+              <p className="text-sm text-slate-700 font-medium">{item.desc}</p>
             </div>
           ))}
         </div>

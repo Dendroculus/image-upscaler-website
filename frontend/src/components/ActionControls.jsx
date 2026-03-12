@@ -7,7 +7,7 @@ export default function ActionControls({ modelType, setModelType, isProcessing, 
         value={modelType}
         onChange={(e) => setModelType(e.target.value)}
         disabled={isProcessing}
-        className="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block px-3 py-2.5 disabled:opacity-50 outline-none"
+        className="bg-white/60 backdrop-blur-sm border border-white text-slate-800 font-medium text-sm rounded-lg focus:ring-slate-400 focus:border-slate-400 block px-3 py-2.5 disabled:opacity-50 outline-none shadow-sm"
       >
         <option value="general">General Model</option>
         <option value="anime">Anime / Art Model</option>
@@ -16,14 +16,14 @@ export default function ActionControls({ modelType, setModelType, isProcessing, 
       <button 
         onClick={handleCancel}
         disabled={isProcessing}
-        className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors disabled:opacity-50"
+        className="px-5 py-2.5 text-sm font-bold text-slate-700 hover:text-slate-900 hover:bg-white/50 rounded-lg transition-colors disabled:opacity-50"
       >
         Cancel
       </button>
       <button 
         onClick={handleUpscale}
         disabled={isProcessing}
-        className="flex items-center justify-center min-w-[140px] px-6 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-lg hover:bg-teal-500 transition-colors shadow-[0_0_15px_rgba(13,148,136,0.4)] hover:shadow-[0_0_25px_rgba(13,148,136,0.6)] disabled:opacity-50 disabled:shadow-none"
+        className="flex items-center justify-center min-w-[140px] px-6 py-2.5 text-sm font-bold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 disabled:shadow-none"
       >
         {isProcessing ? "Processing..." : "Upscale Image"}
       </button>
