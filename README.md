@@ -28,7 +28,15 @@ This repo is split into two projects:
   - stores final outputs in **public Azure** container (`results`)
   - exposes a polling endpoint the frontend can call until the result is ready
 
+## 🎥 Demo
 
+<details>
+  <summary><b>🎥 Click to watch the preview </b></summary>
+
+  <br>
+  <video src="https://github.com/user-attachments/assets/ca19ab4f-23a4-4f9f-b1d4-6c418e16f2ab">
+    
+</details>  
 
 ## ✨ Features
 
@@ -87,7 +95,7 @@ This repo is split into two projects:
 
 This project is designed so you can choose **where the backend runs**:
 
-### ✅ Option A — Run everything on your local network (no backend cloud deploy)
+###  Option A — Run everything on your local network (no backend cloud deploy)
 This is the simplest path if you **do not** want to deploy to Vercel/Render/etc.
 
 - Run **FastAPI locally** (on your LAN machine)
@@ -102,7 +110,7 @@ http://localhost:8000/api/...
 >
 > If you want to use this from another device on your LAN (phone/tablet), you’ll need to change that URL to your machine’s LAN IP (example: `http://192.168.1.50:8000`) and also update CORS in the backend to allow the frontend origin.
 
-### ✅ Option B — Deploy the backend to the cloud
+###  Option B — Deploy the backend to the cloud
 If you deploy the backend (Render/Fly.io/Azure/etc.), you’ll also need to update:
 
 - **CORS** in `backend/main.py` (`allow_origins=[ ... ]`)
@@ -134,7 +142,7 @@ Your storage account should have:
 
 ## 🚀 Installation & Running Locally
 
-### ✅ 1) Clone the repository
+###  1) Clone the repository
 
 ```bash
 git clone https://github.com/Dendroculus/image-upscaler-website.git
@@ -145,7 +153,7 @@ cd image-upscaler-website
 
 ## 🧠 Backend (FastAPI)
 
-### ✅ 2) Create + activate a virtual environment
+###  2) Create + activate a virtual environment
 
 #### macOS / Linux
 ```bash
@@ -159,19 +167,19 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### ✅ 3) Install Python dependencies
+###  3) Install Python dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### ✅ 4) Add your `.env`
+###  4) Add your `.env`
 Create a `.env` file (at repo root) and add:
 
 - `AZURE_CONNECTION_STRING`
 - `REPLICATE_API_TOKEN`
 
-### ✅ 5) Run the API server
+###  5) Run the API server
 
 Your FastAPI app instance is `app` in `backend/main.py`, so run:
 
@@ -188,14 +196,14 @@ uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 
 ## 🎨 Frontend (React + Vite)
 
-### ✅ 6) Install dependencies
+###  6) Install dependencies
 
 ```bash
 cd frontend
 npm install
 ```
 
-### ✅ 7) Start the dev server
+###  7) Start the dev server
 
 ```bash
 npm run dev
