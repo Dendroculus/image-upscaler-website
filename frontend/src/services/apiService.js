@@ -14,12 +14,25 @@ export const apiService = {
   },
 
   async pollResult(jobId) {
-    const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
-    if (res.ok) {
-      return { success: true, data: await res.json() };
-    } else if (res.status !== 404) {
+    try {
+      const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
+      
+      if (!res.ok) {
+        return { success: false, error: true };
+      }
+
+      const data = await res.json();
+
+      if (data.status === "ready") {
+        return { success: true, data: data };
+      } else if (data.status === "processing") {
+        return { success: false, error: false };
+      }
+
+      return { success: false, error: true };
+    } catch (err) {
+      console.error("Polling fetch failed:", err);
       return { success: false, error: true };
     }
-    return { success: false, error: false }; // 404 means still processing
   }
 };

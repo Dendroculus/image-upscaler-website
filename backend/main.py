@@ -1,7 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-
 from api.routes import router as api_router 
 
 app = FastAPI(
@@ -12,10 +10,18 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # In production, change this to your actual Vercel/Netlify URL
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
+
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "message": "AI Upscaler API is running",
+        "docs": "/docs"
+    }
 
 app.include_router(api_router)
