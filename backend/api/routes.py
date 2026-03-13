@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends, BackgroundTasks, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, BackgroundTasks
 
 from core.security import validate_and_sanitize_upload
 from services.storage import StorageService
@@ -9,7 +9,6 @@ router = APIRouter(prefix="/api", tags=["upscale"])
 
 async def process_image_task(job_id: str, safe_filename: str, model_type: str):
     print(f"🚀 Background task started for Job {job_id} [{model_type}]")
-    # We now pass the Azure filename instead of a local file path
     success = await ai_upscaler.run_upscale(safe_filename=safe_filename, job_id=job_id, model_type=model_type)
     if not success:
         print(f"❌ Background task failed for Job {job_id}")
@@ -30,15 +29,12 @@ async def upload_image(
 
 @router.get("/result/{job_id}")
 async def get_result(job_id: str):
-    """Poll endpoint. Returns the Azure URL once finished."""
     result_filename = f"{job_id}.png"
     
-    # Check Azure to see if the AI finished uploading it
     exists = await StorageService.check_result_exists(result_filename)
     
     if exists:
         url = StorageService.get_result_url(result_filename)
-        # Return simple JSON instead of a Redirect
         return {"status": "ready", "url": url}
     
-    raise HTTPException(status_code=404, detail="Result not found or still processing")
+    return {"status": "processing"}
