@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-multipart
+replicate
+aiohttp
+azure-storage-blob
+python-dotenv
