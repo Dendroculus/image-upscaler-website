@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.patch_fix import patch_torchvision
-patch_torchvision()
 
-from api.routes import router as api_router # noqa 
+from api.routes import router as api_router 
 
 app = FastAPI(
     title="AI Image Upscaler API",
