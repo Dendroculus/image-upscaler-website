@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["upscale"])
 
+failed_jobs = set()
+
 async def process_image_task(job_id: str, safe_filename: str, model_type: str):
     """
     Background task to process the uploaded image using the AI upscaler.
@@ -19,8 +21,10 @@ async def process_image_task(job_id: str, safe_filename: str, model_type: str):
         success = await ai_upscaler.run_upscale(safe_filename=safe_filename, job_id=job_id, model_type=model_type)
         if not success:
             logger.error(f"❌ Background task failed for Job {job_id}")
+            failed_jobs.add(job_id)
     except Exception as e:
         logger.error(f"❌ Exception in background task for Job {job_id}: {str(e)}")
+        failed_jobs.add(job_id) 
 
 @router.post(
     "/upscale", 
@@ -33,9 +37,6 @@ async def upload_image(
     file: UploadFile = File(...),
     model_type: str = Depends(valid_model_type)
 ):
-    """
-    Uploads an image, validates it, and starts a background task to upscale it.
-    """
     try:
         job_id, safe_filename = validate_and_sanitize_upload(file)
         await StorageService.save_upload(file, safe_filename)
@@ -56,11 +57,11 @@ async def upload_image(
     response_description="Returns the status of the job and the URL if ready"
 )
 async def get_result(job_id: str):
-    """
-    Checks the storage service for the processed image using the job ID.
-    """
     if not job_id or not job_id.isalnum():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid job ID")
+
+    if job_id in failed_jobs:
+        return {"status": "failed", "message": "AI processing failed or ran out of memory."}
 
     result_filename = f"{job_id}.png"
     
@@ -68,6 +69,7 @@ async def get_result(job_id: str):
         exists = await StorageService.check_result_exists(result_filename)
         
         if exists:
+            failed_jobs.discard(job_id)
             url = StorageService.get_result_url(result_filename)
             return {"status": "ready", "url": url}
         
