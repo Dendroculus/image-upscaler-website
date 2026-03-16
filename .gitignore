@@ -250,3 +250,6 @@ __marimo__/
 # LOCAL FILES
 backend/uploads/
 backend/results/
+
+# logs
+logs/
