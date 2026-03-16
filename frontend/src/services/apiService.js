@@ -24,12 +24,16 @@ export const apiService = {
       const data = await res.json();
 
       if (data.status === "ready") {
-        return { success: true, data: data };
+          return { success: true, data: data };
       } else if (data.status === "processing") {
-        return { success: false, error: false };
+          return { success: false, error: false }; 
+      } else if (data.status === "failed") {
+          console.error("Backend reported job failure");
+          return { success: false, error: true }; 
       }
 
       return { success: false, error: true };
+
     } catch (err) {
       console.error("Polling fetch failed:", err);
       return { success: false, error: true };
