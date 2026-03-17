@@ -18,7 +18,7 @@ async def process_image_task(job_id: str, safe_filename: str, model_type: str):
     """
     logger.info(f"🚀 Background task started for Job {job_id} [{model_type}]")
     try:
-        success = await ai_upscaler.run_upscale(safe_filename=safe_filename, job_id=job_id, model_type=model_type)
+        success = await ai_upscaler.run_upscale(safe_filename=safe_filename, job_id=job_id)
         if not success:
             logger.error(f"❌ Background task failed for Job {job_id}")
             failed_jobs.add(job_id)
