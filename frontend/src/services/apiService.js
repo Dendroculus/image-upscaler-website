@@ -9,10 +9,13 @@ export const apiService = {
       body: formData,
     });
 
-    if (!response.ok) throw new Error('Upload failed');
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || 'Upload failed due to server error');
+    }
+    
     return response.json();
   },
-
   async pollResult(jobId) {
     try {
       const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
