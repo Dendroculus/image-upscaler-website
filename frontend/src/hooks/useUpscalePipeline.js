@@ -55,7 +55,7 @@ export function useUpscalePipeline(setProgress) {
       pollForResult(data.job_id);
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to start processing.");
+      alert(error.message); 
       setIsProcessing(false);
     }
   };
