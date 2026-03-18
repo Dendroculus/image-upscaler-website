@@ -10,7 +10,13 @@ const ERROR_MESSAGES = {
   TOO_LARGE: `File size exceeds the ${config.MAX_FILE_SIZE_MB}MB limit.`
 };
 
-const MAX_FILE_SIZE_BYTES = config.MAX_FILE_SIZE_MB * 1024 * 1024;
+const MaxFileSizeBytes = config.MAX_FILE_SIZE_MB * 1024 * 1024;
+
+const allowedForRegex = config.ALLOWED_EXTENSIONS
+  .map(ext => ext === 'jpg' ? 'jpeg' : ext) 
+  .filter((value, index, array) => array.indexOf(value) === index); 
+const supportedMimeRegex = new RegExp(`^image/(${allowedForRegex.join('|')})$`);
+
 
 /**
  * Validates a file's MIME type, size limits, and performs a pre-flight 
@@ -25,12 +31,12 @@ export const validateImageUpload = (file) => {
       return resolve({ isValid: false, error: ERROR_MESSAGES.DEFAULT });
     }
 
-    if (file.size > MAX_FILE_SIZE_BYTES) {
+    if (file.size > MaxFileSizeBytes) {
       return resolve({ isValid: false, error: ERROR_MESSAGES.TOO_LARGE });
     }
 
     const fileType = file.type || "";
-    const isSupportedImage = fileType.match('image/(jpeg|png|webp)');
+    const isSupportedImage = supportedMimeRegex.test(fileType);
     const isSvg = fileType === 'image/svg+xml';
     const isOtherImage = fileType.startsWith('image/') && !isSupportedImage && !isSvg;
     const isVideo = fileType.startsWith('video/');

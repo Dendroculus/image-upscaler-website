@@ -1,10 +1,12 @@
+const ApiBaseUrl = 'http://localhost:8000/api';
+
 export const apiService = {
   async uploadImage(file, modelType) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('model_type', modelType);
 
-    const response = await fetch('http://localhost:8000/api/upscale', {
+    const response = await fetch(`${ApiBaseUrl}/upscale`, {
       method: 'POST',
       body: formData,
     });
@@ -18,7 +20,7 @@ export const apiService = {
   },
   async pollResult(jobId) {
     try {
-      const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
+      const res = await fetch(`${ApiBaseUrl}/result/${jobId}`);
       
       if (!res.ok) {
         return { success: false, error: true };
