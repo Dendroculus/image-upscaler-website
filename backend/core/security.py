@@ -3,14 +3,11 @@ import logging
 from typing import Tuple
 from fastapi import HTTPException, UploadFile, status
 from PIL import Image, UnidentifiedImageError
+from core.config import MAX_FILE_SIZE_MB, MAX_FILE_SIZE_BYTES, MAX_MEGAPIXELS, MAX_PIXELS
 
 logger = logging.getLogger(__name__)
 
-ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"]
-MAX_FILE_SIZE_MB = 10
-MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
-MAX_MEGAPIXELS = 3 
-MAX_PIXELS = MAX_MEGAPIXELS * 1_000_000 
+ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"]
 
 def _validate_mime_and_size(file: UploadFile) -> None:
     if file.content_type not in ALLOWED_MIME_TYPES:
