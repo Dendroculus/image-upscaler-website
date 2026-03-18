@@ -1,13 +1,14 @@
 <div align="center">
 
-# AI Image Upscaler Website (Neural Upscaler)
+# AI Image Upscaler Website (Pixel Forge)
 
 A modern **React + FastAPI** web app that upscales images with **Real-ESRGAN** via **Replicate Cloud GPUs**, using **Azure Blob Storage** for private uploads + public results.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?logo=fastapi&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.9.4-3776AB?logo=python&logoColor=white)
 ![Azure](https://img.shields.io/badge/Azure-Blob_Storage-0078D4?logo=microsoftazure&logoColor=white)
 ![Replicate](https://img.shields.io/badge/Replicate-Cloud_GPU-000000?logo=replicate&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)

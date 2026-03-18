@@ -91,12 +91,19 @@ export default function App() {
       <nav className="w-full border-b border-white/30 bg-white/30 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
-              <svg className="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="flex items-center gap-2">
+              <img 
+                src="/PixelForge.png" 
+                alt="Pixel Forge Logo" 
+                className="h-8 sm:h-10 md:h-8 w-auto object-contain block"
+              />
+
+              <img 
+                src="/PixelForgeAI_BlackText.png" 
+                alt="Pixel Forge Text" 
+                className="h-6 sm:h-7 md:h-4 w-auto object-contain block translate-y-[2px]"
+              />
             </div>
-            <span className="text-lg font-bold tracking-tight text-slate-900">Neural Upscaler</span>
           </div>
           <div className="hidden sm:flex items-center gap-8 text-sm text-slate-700">
             <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
@@ -121,7 +128,7 @@ export default function App() {
       {/* Footer */}
       <footer className="w-full border-t border-white/30 bg-white/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
-          <p>© 2026 Neural Upscaler. Powered by Real-ESRGAN.</p>
+          <p>© 2026 Pixel Forge. Powered by Real-ESRGAN.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
             <a href="#" className="hover:text-slate-900 transition-colors">Terms</a>
