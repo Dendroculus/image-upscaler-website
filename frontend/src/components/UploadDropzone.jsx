@@ -7,6 +7,9 @@ import config from '../../../app_config.json';
  * A drag-and-drop file upload zone that visually handles drag states,
  * error states, and processes file validation before accepting an upload.
  */
+
+const AllowedFormatsText = config.ALLOWED_EXTENSIONS.map(e => e.toUpperCase()).join(', ');
+
 export default function UploadDropzone({ onFileSelect }) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState(null);
@@ -95,12 +98,12 @@ export default function UploadDropzone({ onFileSelect }) {
           {error ? (
             <>
               <p className="font-bold text-base sm:text-lg text-rose-600 max-w-[400px] mx-auto leading-snug px-4">{error}</p>
-              <p className="text-sm mt-2 text-rose-500 font-medium">Strictly PNG, JPG, or WEBP only!</p>
+              <p className="text-sm mt-2 text-rose-500 font-medium">Strictly {AllowedFormatsText} only!</p>
             </>
           ) : (
             <>
               <p className="font-bold text-lg text-slate-800">Click to upload or drag & drop</p>
-              <p className="text-sm mt-1.5 text-slate-600 font-medium">Supports PNG, JPG, WEBP • Max {config.MAX_FILE_SIZE_MB}MB</p>
+              <p className="text-sm mt-1.5 text-slate-600 font-medium">Supports {AllowedFormatsText} • Max {config.MAX_FILE_SIZE_MB}MB</p>
             </>
           )}
         </div>
