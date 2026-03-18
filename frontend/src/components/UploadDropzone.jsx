@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-
-const AttackError = "Are you trying to attack the web? Well that's unfortunate 😝";
+import { validateImageUpload } from '../utils/fileValidation'; 
 
 export default function UploadDropzone({ onFileSelect }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -10,45 +9,33 @@ export default function UploadDropzone({ onFileSelect }) {
 
   const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); if (error) setError(null); };
   const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
-  const handleDrop = (e) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files?.length > 0) handleFiles(e.dataTransfer.files[0]); };
-  const handleClick = () => { if (error) setError(null); fileInputRef.current.click(); };
-  const handleKeyDown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (error) setError(null); fileInputRef.current.click(); } };
-  const handleChange = (e) => { if (e.target.files?.length > 0) handleFiles(e.target.files[0]); };
   
-  const handleFiles = (file) => {
-    const fileName = file.name.toLowerCase();
-    const ext = fileName.split('.').pop(); 
-    
-    const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
-    const videoExts = ['mp4', 'avi', 'wmv', 'flv', 'm4v', 'mpg', '3gp', 'mov', 'webm', 'mkv'];
+  const handleDrop = (e) => { 
+    e.preventDefault(); 
+    setIsDragging(false); 
+    if (e.dataTransfer.files?.length > 0) processFile(e.dataTransfer.files[0]); 
+  };
+  
+  const handleClick = () => { if (error) setError(null); fileInputRef.current.click(); };
+  
+  const handleKeyDown = (e) => { 
+    if (e.key === 'Enter' || e.key === ' ') { 
+      e.preventDefault(); if (error) setError(null); fileInputRef.current.click(); 
+    } 
+  };
+  
+  const handleChange = (e) => { 
+    if (e.target.files?.length > 0) processFile(e.target.files[0]); 
+  };
+  
+  const processFile = async (file) => {
+    const result = await validateImageUpload(file);
 
-    const isValidImageExt = allowedExts.includes(ext);
-    const isValidMime = file?.type.match('image/(jpeg|png|webp)');
-
-    if (isValidImageExt && isValidMime) {
-      // "Pre-flight" check to catch spoofed files (like .txt renamed to .jpg)
-      const img = new Image();
-      const objectUrl = URL.createObjectURL(file);
-
-      img.onload = () => {
-        URL.revokeObjectURL(objectUrl);
-        setError(null);
-        onFileSelect(file);
-      };
-
-      img.onerror = () => {
-        URL.revokeObjectURL(objectUrl);
-        setError(AttackError);
-        setTimeout(() => setError(null), 5000);
-      };
-
-      img.src = objectUrl;
-
-    } else if (videoExts.includes(ext)) {
-      setError("Why do you even try to upload a video to an image upscaler web? 🤔");
-      setTimeout(() => setError(null), 5000);
+    if (result.isValid) {
+      setError(null);
+      onFileSelect(result.file);
     } else {
-      setError(AttackError);
+      setError(result.error);
       setTimeout(() => setError(null), 5000);
     }
     
