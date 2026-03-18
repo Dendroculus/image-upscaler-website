@@ -1,14 +1,27 @@
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { validateImageUpload } from '../utils/fileValidation'; 
+import config from '../../../app_config.json';
 
+/**
+ * A drag-and-drop file upload zone that visually handles drag states,
+ * error states, and processes file validation before accepting an upload.
+ */
 export default function UploadDropzone({ onFileSelect }) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
-  const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); if (error) setError(null); };
-  const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
+  const handleDragOver = (e) => { 
+    e.preventDefault(); 
+    setIsDragging(true); 
+    if (error) setError(null); 
+  };
+  
+  const handleDragLeave = (e) => { 
+    e.preventDefault(); 
+    setIsDragging(false); 
+  };
   
   const handleDrop = (e) => { 
     e.preventDefault(); 
@@ -16,11 +29,16 @@ export default function UploadDropzone({ onFileSelect }) {
     if (e.dataTransfer.files?.length > 0) processFile(e.dataTransfer.files[0]); 
   };
   
-  const handleClick = () => { if (error) setError(null); fileInputRef.current.click(); };
+  const handleClick = () => { 
+    if (error) setError(null); 
+    fileInputRef.current.click(); 
+  };
   
   const handleKeyDown = (e) => { 
     if (e.key === 'Enter' || e.key === ' ') { 
-      e.preventDefault(); if (error) setError(null); fileInputRef.current.click(); 
+      e.preventDefault(); 
+      if (error) setError(null); 
+      fileInputRef.current.click(); 
     } 
   };
   
@@ -82,7 +100,7 @@ export default function UploadDropzone({ onFileSelect }) {
           ) : (
             <>
               <p className="font-bold text-lg text-slate-800">Click to upload or drag & drop</p>
-              <p className="text-sm mt-1.5 text-slate-600 font-medium">Supports PNG, JPG, WEBP • Max 10MB</p>
+              <p className="text-sm mt-1.5 text-slate-600 font-medium">Supports PNG, JPG, WEBP • Max {config.MAX_FILE_SIZE_MB}MB</p>
             </>
           )}
         </div>
