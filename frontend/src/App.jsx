@@ -1,25 +1,25 @@
+import { useState } from 'react';
 import Home from './pages/Home';
+import LegalModal from './components/LegalModal';
+import { legalModalData } from './data/legalModalData';
 
 export default function App() {
+  const [modalState, setModalState] = useState({ isOpen: false, type: 'privacy' }); 
+
+  const openModal = (type) => setModalState({ isOpen: true, type });
+  const closeModal = () => setModalState(prev => ({ ...prev, isOpen: false }));
+
+  const activeModalData = legalModalData[modalState.type];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#EEAECA] to-[#94BBE9] text-slate-800 flex flex-col overflow-x-hidden selection:bg-white/40">
       
-      {/* Navigation */}
       <nav className="w-full border-b border-white/30 bg-white/30 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <img 
-                src="/PixelForge.png" 
-                alt="Pixel Forge Logo" 
-                className="h-8 sm:h-10 md:h-8 w-auto object-contain block"
-              />
-
-              <img 
-                src="/PixelForgeAI_BlackText.png" 
-                alt="Pixel Forge Text" 
-                className="h-6 sm:h-7 md:h-4 w-auto object-contain block translate-y-[2px]"
-              />
+              <img src="/PixelForge.png" alt="Pixel Forge Logo" className="h-8 sm:h-10 md:h-8 w-auto object-contain block" />
+              <img src="/PixelForgeAI_BlackText.png" alt="Pixel Forge Text" className="h-6 sm:h-7 md:h-4 w-auto object-contain block translate-y-[2px]" />
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-8 text-sm text-slate-700">
@@ -33,26 +33,32 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center relative">
-        {/* Soft volumetric light blobs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-white/40 blur-[150px] rounded-full pointer-events-none"></div>
         <div className="absolute top-[400px] right-0 w-[400px] h-[400px] bg-white/30 blur-[120px] rounded-full pointer-events-none"></div>
-        
         <Home />
       </main>
 
-      {/* Footer */}
       <footer className="w-full border-t border-white/30 bg-white/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
           <p>© 2026 Pixel Forge. Powered by Real-ESRGAN.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">Terms</a>
-            <a href="https://github.com/Dendroculus/image-upscaler-website" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors">Source Code</a>
+          
+          <div className="flex items-center gap-6 group font-medium">
+            <button onClick={() => openModal('privacy')} className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Privacy</button>
+            <button onClick={() => openModal('terms')} className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Terms</button>
+            <a href="https://github.com/Dendroculus/image-upscaler-website" target="_blank" rel="noopener noreferrer" className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Source Code</a>
           </div>
         </div>
       </footer>
+
+      <LegalModal 
+        isOpen={modalState.isOpen} 
+        onClose={closeModal} 
+        title={activeModalData.title}
+      >
+        {activeModalData.content}
+      </LegalModal>
+
     </div>
   );
 }
