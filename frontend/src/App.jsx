@@ -1,108 +1,25 @@
+import { useState } from 'react';
 import Home from './pages/Home';
+import LegalModal from './components/LegalModal';
+import { legalModalData } from './data/legalModalData';
 
 export default function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [resultUrl, setResultUrl] = useState(null);
-  
-  // New state for the dropdown
-  const [modelType, setModelType] = useState('general');
+  const [modalState, setModalState] = useState({ isOpen: false, type: 'privacy' }); 
 
-  const handleFileSelect = (file) => {
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-    setResultUrl(null); 
-  };
+  const openModal = (type) => setModalState({ isOpen: true, type });
+  const closeModal = () => setModalState(prev => ({ ...prev, isOpen: false }));
 
-  const handleCancel = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setResultUrl(null);
-  };
-
-  const handleUpscale = async () => {
-    if (!selectedFile) return;
-    setIsProcessing(true);
-    
-    // 1. Pack the file and the selected model type
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('model_type', modelType); 
-
-    try {
-      // 2. Send to FastAPI
-      const response = await fetch('http://localhost:8000/api/upscale', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Upload failed');
-      }
-
-      const data = await response.json();
-      const jobId = data.job_id;
-      
-      // 3. Start Polling the Result Endpoint
-      pollForResult(jobId);
-
-    } catch (error) {
-      console.error("Error uploading:", error);
-      alert(error.message);
-      setIsProcessing(false);
-    }
-  };
-
-  const pollForResult = (jobId) => {
-      // Check the server every 3 seconds
-      const interval = setInterval(async () => {
-        try {
-          const res = await fetch(`http://localhost:8000/api/result/${jobId}`);
-          
-          if (res.ok) {
-            // 1. Read the JSON sent by FastAPI
-            const data = await res.json();
-            
-            // 2. Stop the polling loop
-            clearInterval(interval);
-            
-            // 3. Put the Azure URL directly into the image slider
-            setResultUrl(data.url);
-            setIsProcessing(false);
-            
-          } else if (res.status !== 404) {
-            clearInterval(interval);
-            setIsProcessing(false);
-            alert("Processing failed on the server.");
-          }
-        } catch (err) {
-          console.error("Polling error:", err);
-        }
-      }, 3000);
-    };
+  const activeModalData = legalModalData[modalState.type];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#EEAECA] to-[#94BBE9] text-slate-800 flex flex-col overflow-x-hidden selection:bg-white/40">
       
-      {/* Navigation */}
       <nav className="w-full border-b border-white/30 bg-white/30 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <img 
-                src="/PixelForge.png" 
-                alt="Pixel Forge Logo" 
-                className="h-8 sm:h-10 md:h-8 w-auto object-contain block"
-              />
-
-              <img 
-                src="/PixelForgeAI_BlackText.png" 
-                alt="Pixel Forge Text" 
-                className="h-6 sm:h-7 md:h-4 w-auto object-contain block translate-y-[2px]"
-              />
+              <img src="/PixelForge.png" alt="Pixel Forge Logo" className="h-8 sm:h-10 md:h-8 w-auto object-contain block" />
+              <img src="/PixelForgeAI_BlackText.png" alt="Pixel Forge Text" className="h-6 sm:h-7 md:h-4 w-auto object-contain block translate-y-[2px]" />
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-8 text-sm text-slate-700">
@@ -116,26 +33,32 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center relative">
-        {/* Soft volumetric light blobs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-white/40 blur-[150px] rounded-full pointer-events-none"></div>
         <div className="absolute top-[400px] right-0 w-[400px] h-[400px] bg-white/30 blur-[120px] rounded-full pointer-events-none"></div>
-        
         <Home />
       </main>
 
-      {/* Footer */}
       <footer className="w-full border-t border-white/30 bg-white/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
           <p>© 2026 Pixel Forge. Powered by Real-ESRGAN.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">Terms</a>
-            <a href="https://github.com/Dendroculus/image-upscaler-website" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors">Source Code</a>
+          
+          <div className="flex items-center gap-6 group font-medium">
+            <button onClick={() => openModal('privacy')} className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Privacy</button>
+            <button onClick={() => openModal('terms')} className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Terms</button>
+            <a href="https://github.com/Dendroculus/image-upscaler-website" target="_blank" rel="noopener noreferrer" className="transition-colors focus:outline-none group-hover:text-slate-400 hover:!text-slate-900">Source Code</a>
           </div>
         </div>
       </footer>
+
+      <LegalModal 
+        isOpen={modalState.isOpen} 
+        onClose={closeModal} 
+        title={activeModalData.title}
+      >
+        {activeModalData.content}
+      </LegalModal>
+
     </div>
   );
 }
