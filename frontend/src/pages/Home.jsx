@@ -6,6 +6,7 @@ import ProgressBar from '../components/ProgressBar';
 import ActionControls from '../components/ActionControls';
 import { useUpscalePipeline } from '../hooks/useUpscalePipeline';
 import { useSimulatedProgress } from '../hooks/useSimulatedProgress';
+import config from '../../../app_config.json'
 
 export default function Home() {
   const [progress, setProgress] = useState(0);
@@ -27,7 +28,6 @@ export default function Home() {
   return (
     <div className="w-full">
       
-      {/* Hero Section */}
       <section className="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 border border-white/60 text-slate-700 text-xs font-semibold mb-6 shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-[#EEAECA] animate-pulse"></span>
@@ -100,10 +100,9 @@ export default function Home() {
           )}
         </div>
 
-        {/* Trusted formats badge */}
         <div className="mt-6 flex items-center justify-center gap-4 text-xs text-slate-600 font-medium">
           <span>Supports:</span>
-          {['PNG', 'JPG', 'WEBP'].map((fmt) => (
+          {config.ALLOWED_EXTENSIONS.map((fmt) => (
             <span key={fmt} className="px-2 py-0.5 rounded bg-white/40 border border-white/50 text-slate-600 font-mono">
               .{fmt.toLowerCase()}
             </span>
@@ -111,7 +110,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="max-w-6xl mx-auto px-6 py-1">
         <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">Why Pixel Forge?</h2>
         <p className="text-slate-700 text-center mb-12 max-w-xl mx-auto font-medium">Enterprise-grade image enhancement powered by state-of-the-art AI models.</p>
@@ -145,8 +143,8 @@ export default function Home() {
               title: 'Two AI Models',
               desc: 'Choose between General (photos) and Anime/Art models for optimal results on any image type.'
             }
-          ].map((feature, i) => (
-            <div key={i} className="group p-6 rounded-2xl bg-white/40 border border-white/50 hover:border-white hover:bg-white/60 transition-all shadow-sm">
+          ].map((feature) => ( 
+            <div key={feature.title} className="group p-6 rounded-2xl bg-white/40 border border-white/50 hover:border-white hover:bg-white/60 transition-all shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-white shadow-sm border border-white/60 flex items-center justify-center text-slate-800 mb-4 group-hover:scale-105 transition-transform">
                 {feature.icon}
               </div>
@@ -157,7 +155,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it Works Section */}
       <section id="how-it-works" className="max-w-4xl mx-auto px-6 py-20">
         <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">How It Works</h2>
         <p className="text-slate-700 text-center mb-12 font-medium">Three simple steps to enhance your images.</p>
@@ -167,8 +164,8 @@ export default function Home() {
             { step: '01', title: 'Upload', desc: 'Drag & drop or click to upload any PNG, JPG, or WEBP image.' },
             { step: '02', title: 'Enhance', desc: 'Our Real-ESRGAN model upscales your image to 4x resolution with AI.' },
             { step: '03', title: 'Download', desc: 'Compare the before & after, then download your enhanced image instantly.' },
-          ].map((item, i) => (
-            <div key={i} className="text-center">
+          ].map((item) => ( 
+            <div key={item.step} className="text-center">
               <div className="text-5xl font-black text-white drop-shadow-md mb-3">{item.step}</div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
               <p className="text-sm text-slate-700 font-medium">{item.desc}</p>
