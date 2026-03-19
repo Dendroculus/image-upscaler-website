@@ -7,7 +7,7 @@ def load_config():
     """
     
     config_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "app_config.json")
+        os.path.join(os.path.dirname(__file__), "..", "..", "app_config.json")
     )
 
     try:
