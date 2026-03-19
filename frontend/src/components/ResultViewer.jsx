@@ -6,16 +6,14 @@ export default function ResultViewer({ originalImage, upscaledImage }) {
   const [isLoaded, setIsLoaded] = useState(false); 
   const [loadingText, setLoadingText] = useState("Downloading Results...");
 
-  // NEW: Smart timer that updates the text if the download takes longer than 3 seconds
   useEffect(() => {
     let timeout;
     if (!isLoaded) {
       timeout = setTimeout(() => {
         setLoadingText("High-resolution file detected. Almost there...");
-      }, 3000); // Wait 3 seconds before changing the text
+      }, 3000); 
     }
     
-    // Cleanup timeout when the image finally loads or component unmounts
     return () => clearTimeout(timeout);
   }, [isLoaded]);
 
