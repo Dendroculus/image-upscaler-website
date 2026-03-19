@@ -250,6 +250,7 @@ __marimo__/
 # LOCAL FILES
 backend/uploads/
 backend/results/
+TODO.txt
 
 # logs
 logs/
