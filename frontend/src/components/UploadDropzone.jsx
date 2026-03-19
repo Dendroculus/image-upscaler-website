@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 import { validateImageUpload } from '../utils/fileValidation'; 
 import config from '../../../app_config.json';
 
-/**
- * A drag-and-drop file upload zone that visually handles drag states,
- * error states, and processes file validation before accepting an upload.
- */
-
 const AllowedFormatsText = config.ALLOWED_EXTENSIONS.map(e => e.toUpperCase()).join(', ');
 
 export default function UploadDropzone({ onFileSelect }) {
@@ -37,13 +32,6 @@ export default function UploadDropzone({ onFileSelect }) {
     fileInputRef.current.click(); 
   };
   
-  const handleKeyDown = (e) => { 
-    if (e.key === 'Enter' || e.key === ' ') { 
-      e.preventDefault(); 
-      if (error) setError(null); 
-      fileInputRef.current.click(); 
-    } 
-  };
   
   const handleChange = (e) => { 
     if (e.target.files?.length > 0) processFile(e.target.files[0]); 
@@ -63,24 +51,29 @@ export default function UploadDropzone({ onFileSelect }) {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const getDropzoneStateClasses = () => {
+    if (isDragging) return 'border-slate-800 bg-white/60 scale-[1.02]';
+    if (error) return 'border-rose-400 bg-rose-50/50 hover:bg-rose-50';
+    return 'border-white/60 bg-white/30 hover:border-white hover:bg-white/50';
+  };
+
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button" 
       aria-label="Upload image file"
-      className={`border-2 border-dashed rounded-xl p-10 sm:p-16 text-center cursor-pointer transition-all duration-300 ease-in-out
-        ${isDragging 
-          ? 'border-slate-800 bg-white/60 scale-[1.02]' 
-          : error 
-            ? 'border-rose-400 bg-rose-50/50 hover:bg-rose-50' 
-            : 'border-white/60 bg-white/30 hover:border-white hover:bg-white/50'}`}
+      className={`w-full border-2 border-dashed rounded-xl p-10 sm:p-16 text-center cursor-pointer transition-all duration-300 ease-in-out ${getDropzoneStateClasses()}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
     >
-      <input type="file" className="hidden" ref={fileInputRef} onChange={handleChange} />
+      <input 
+        type="file" 
+        className="hidden" 
+        ref={fileInputRef} 
+        onChange={handleChange} 
+        onClick={(e) => e.stopPropagation()} 
+      />
       <div className="flex flex-col items-center justify-center space-y-4 pointer-events-none">
         <div className={`w-14 h-14 rounded-2xl shadow-sm border flex items-center justify-center transition-colors duration-300
           ${error ? 'bg-rose-100 border-rose-200 text-rose-600' : 'bg-white border-white/50 text-slate-700'}`}>
@@ -108,7 +101,7 @@ export default function UploadDropzone({ onFileSelect }) {
           )}
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
